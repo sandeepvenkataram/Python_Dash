@@ -37,7 +37,7 @@ def generate_axis_selector(my_id: str, axis: str, default_val: str):
             dcc.Dropdown(
                 options = [{"label" : Data.master_name_map[x], "value" : x} for x in Data.master_name_map],
                 value = default_val,
-                id={ 
+                id={
                     'type': 'axis-dropdown-'+axis,
                     'index': my_id,
                 },
@@ -72,8 +72,8 @@ def generate_plot_checkboxes(my_id: str):
         [
             dcc.Checklist(
                 options = [
-                    {"label": "R", "value" : "R"}, 
-                    {"label": "Errorbars", "value" : "Errorbars"}, 
+                    {"label": "R", "value" : "R"},
+                    {"label": "Errorbars", "value" : "Errorbars"},
                     {"label": "Y=X", "value" : "YX"},
                 ],
                 value = ["R","Errorbars"],
@@ -89,15 +89,19 @@ def generate_plot_checkboxes(my_id: str):
     )
     return(my_div)
 
+
+def get_figure_id(my_id):
+    """ Generate ID for dcc Graph"""
+    if my_id == "primary": # Make primary plot different from other plots so that they can be handled with separate callbacks
+        return my_id
+    return {'type': "figure", 'index': my_id,}
+
 def generate_scatter_col(my_id: str, defaultx: str, defaulty: str):
     """ Generate HTML column including graph, X and Y dropdown and scale selector, and plot checkboxes """
     result = dbc.Col(
         [
             dcc.Graph(
-                id = {
-                    'type': "figure",
-                    'index': my_id,
-                },
+                id = get_figure_id(my_id),
                 hoverData={'points': [{'hovertext': 'A1_243081'}]}
             ),
             dbc.Row(
@@ -161,10 +165,9 @@ def generate_highlighted_table():
                 page_current =0,
                 page_action="native",
             ),
-            
+
         ],
         width=4,
     )
 
     return result
-    

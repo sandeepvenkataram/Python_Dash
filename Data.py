@@ -6,9 +6,6 @@
 
 
 import pandas as pd
-import re
-from os import path
-import random
 
 root_dir = "Input_Data/"
 master_df = pd.read_table(root_dir+"Data_S1.tab", sep = "\t")
@@ -53,19 +50,23 @@ for col in master_name_map:
 
 
 def get_barcodes_to_highlight(selected_clones, selected_genes):
-    """ 
+    """
         Get a set of barcodes to highlight
     """
-    if len(selected_clones) == 0 and len(selected_genes) == 0: #if we haven't picked anything, highlight everything
+    if len(selected_clones) == 0 and len(selected_genes) == 0: #if we haven't picked anything return an empty list
         return []
-    
-    if len(selected_genes) == 0: #if we haven't picked any genes, show all highlighted clones
+
+    if len(selected_clones) > 0: #if we have only highlighted some clones
         return selected_clones
-    
+
+    if len(selected_genes) > 0: #if we have only selected some genes
+        return mut_df[mut_df['gene'].isin(selected_genes)].index.tolist()
+
+    # if we have selected both genes and clones, filter appropriately
     mut_subset = mut_df.loc[
         list(set(selected_clones).intersection(set(mut_df.index.tolist())))
     ]
     mut_subset = mut_subset[mut_subset['gene'].isin(selected_genes)]
-    
+
     return mut_subset.index.to_list()
 
